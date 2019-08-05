@@ -1,0 +1,65 @@
+
+package Analizador.E3;
+
+import java_cup.runtime.*;
+import Analizador.util.*;
+import intefaz.Principal;
+import java.util.Stack;
+
+
+parser code
+{:
+    /**Metodo al que se llama automáticamente ante algún error sintactico.*/
+    public void syntax_error(Symbol s){
+        System.err.println("Error en la Línea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "
+        +s.value + " no reconocido." );
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+        
+    }
+
+    /**Metodo al que se llama en el momento en que ya no es posible una recuperación de
+    getErrores().*/
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        System.err.println("Error en la Línea " + (s.right+1)+ "Columna "+(s.left+1)+". Identificador " +
+        s.value + " no reconocido.");  
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+  
+    }
+
+:}
+
+action code {:
+void Ej3(ListaPalabras lista){
+lista.MostrarPalabrasLC();
+
+}
+
+:}
+
+/*terminales reservados*/
+terminal mas,menos,div,por,par1,par2,coma,cor1,cor2,llave1,llave2,puntoycoma;
+terminal String id,entero,decimal,cadena,booleano,caracter;
+non terminal INICIO;
+non terminal INI1,INI2,INI3,INI5,B,C;
+//precedencia
+
+INICIO::=INI3:l{:Ej3((ListaPalabras)l);:};
+
+//******************************EJ#3********************************************
+
+INI3::=id:val coma INI3:l{:
+ListaPalabras lista = (ListaPalabras)l;
+lista.add(new Palabra(val));
+RESULT=lista;
+:}
+|id:val {:ListaPalabras lista=new ListaPalabras();
+lista.add(new Palabra(val));
+RESULT=lista;
+:};
+
+/*
+Escriba una definición dirigida por la sintaxis que reconozca palabras separadas por
+comas y que al final muestre la palabra más corta y la más larga.
+*/

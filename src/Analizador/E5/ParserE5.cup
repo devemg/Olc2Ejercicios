@@ -1,0 +1,71 @@
+
+package Analizador.E5;
+
+import java_cup.runtime.*;
+import Analizador.util.*;
+import intefaz.Principal;
+import java.util.Stack;
+
+
+parser code
+{:
+    /**Metodo al que se llama automáticamente ante algún error sintactico.*/
+    public void syntax_error(Symbol s){
+        System.err.println("Error en la Línea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "
+        +s.value + " no reconocido." );
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+        
+    }
+
+    /**Metodo al que se llama en el momento en que ya no es posible una recuperación de
+    getErrores().*/
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        System.err.println("Error en la Línea " + (s.right+1)+ "Columna "+(s.left+1)+". Identificador " +
+        s.value + " no reconocido.");  
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+  
+    }
+
+:}
+
+action code {:
+
+:}
+
+/*terminales reservados*/
+terminal mas,menos,div,por,par1,par2,coma,cor1,cor2,llave1,llave2,puntoycoma;
+terminal String id,entero,decimal,cadena,booleano,caracter;
+non terminal INICIO;
+non terminal A,B,C;
+//precedencia
+
+
+INICIO::=A:a{:Principal.escribirMensajeEnConsola(((Atributo5)a).getValor());:};
+
+A::=A:a mas B:b{:RESULT=new Atributo5(((Atributo5)a).getValor()+"*"+((Atributo5)b).getValor(),2);:}
+|B:val{:RESULT=val;:}
+;
+
+B::=B:b por C:a{:RESULT=new Atributo5(((Atributo5)b).getValor()+"*"+((Atributo5)a).getValor(),2);:}
+|C:val{:RESULT=val;:};
+
+C::=entero:val {:RESULT=new Atributo5(val,0);:}
+|par1 A:val par2{:
+Atributo5 at=(Atributo5)val;
+if(at.getTipo()==3){
+RESULT=at;
+}else{
+RESULT=new Atributo5("("+at.getValor()+")",3);
+}
+:};
+
+/*
+Para una gramática no ambigua, que reconoce expresiones aritméticas para los opera-
+dores de suma y multiplicación (+, *) escriba una definición dirigida por la sintaxis, que
+elimine los paréntesis anidados en la expresión exceptuado el primer par de paréntesis.
+((5) + (((4)))) + (2) * 3=((5) + (4)) + (2) * 3
+(3 * 4) + (3 * 1 + 1) + (2 * ((4)))=(3 * 4) + (3 * 1 + 1) + (2 * (4))
+Implementación de Atributo5 en Analizador.util
+*/

@@ -1,0 +1,97 @@
+
+package Analizador.E2;
+
+import java_cup.runtime.*;
+import Analizador.util.*;
+import intefaz.Principal;
+import java.util.Stack;
+
+
+parser code
+{:
+    /**Metodo al que se llama automáticamente ante algún error sintactico.*/
+    public void syntax_error(Symbol s){
+        System.err.println("Error en la Línea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "
+        +s.value + " no reconocido." );
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+        
+    }
+
+    /**Metodo al que se llama en el momento en que ya no es posible una recuperación de
+    getErrores().*/
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        System.err.println("Error en la Línea " + (s.right+1)+ "Columna "+(s.left+1)+". Identificador " +
+        s.value + " no reconocido.");  
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+  
+    }
+
+:}
+
+action code {:
+
+void Ej2(Stack pila){
+if(pila.size()>6){
+Principal.escribirErrorEnConsola("Error: No pueden haber más de 6 digitos");
+}else{
+//sacar y contar para asignar
+int contador=1;
+while(!pila.isEmpty()){
+switch(contador){
+    case 1:
+        Principal.escribirMensajeEnConsola("Unidad: "+pila.pop().toString());
+        break;
+        case 2:
+        Principal.escribirMensajeEnConsola("Decena: "+pila.pop().toString());
+        break;
+        case 3:
+        Principal.escribirMensajeEnConsola("Centena: "+pila.pop().toString());
+        break;             
+        case 4:
+        Principal.escribirMensajeEnConsola("Unidad de mil: "+pila.pop().toString());
+        break;
+        case 5:
+        Principal.escribirMensajeEnConsola("Decena de mil: "+pila.pop().toString());
+        break;
+        case 6:
+        Principal.escribirMensajeEnConsola("Centena de mil: "+pila.pop().toString());
+        break;
+}
+contador++;
+}
+}
+}
+:}
+
+/*terminales reservados*/
+terminal mas,menos,div,por,par1,par2,coma,cor1,cor2,llave1,llave2,puntoycoma;
+terminal String id,entero,decimal,cadena,booleano,caracter;
+non terminal INICIO;
+non terminal INI1,INI2,INI3,INI5,B,C;
+//precedencia
+
+INICIO::=INI2:p {:Ej2((Stack)p);:};
+
+
+//******************************EJ#2********************************************
+//modificar expresion regular para identificar un digito en lugar de un entero
+//codigo de implementacion de produccion principal en Ej2();
+INI2::=INI2:p entero:val {:
+Stack pila = (Stack)p;
+pila.push(val);
+RESULT=pila;
+:}
+|entero:val {:
+Stack pila = new Stack();
+pila.push(val);
+RESULT=pila;
+:};
+
+/*
+Escriba una definición dirigida por la sintaxis que reconozca un número entero dígito
+por dígito y lo descomponga en unidades, decenas, centenas, unidades de mil, decenas de
+mil y centenas de mil. Si el número reconocido tiene más de seis dígitos debe desplegarse
+un mensaje de error.
+*/
