@@ -1,0 +1,71 @@
+
+package Analizador.E7;
+
+import java_cup.runtime.*;
+import Analizador.util.*;
+import intefaz.Principal;
+import java.util.Stack;
+import java.util.ArrayList;
+
+parser code
+{:
+    /**Metodo al que se llama automáticamente ante algún error sintactico.*/
+    public void syntax_error(Symbol s){
+        System.err.println("Error en la Línea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "
+        +s.value + " no reconocido." );
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+        
+    }
+
+    /**Metodo al que se llama en el momento en que ya no es posible una recuperación de
+    getErrores().*/
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        System.err.println("Error en la Línea " + (s.right+1)+ "Columna "+(s.left+1)+". Identificador " +
+        s.value + " no reconocido.");  
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+  
+    }
+
+:}
+
+action code {:
+
+:}
+
+/*terminales reservados*/
+terminal mas,menos,div,por,par1,par2,coma,cor1,cor2,llave1,llave2,puntoycoma;
+terminal String id,entero,decimal,cadena,booleano,caracter;
+non terminal INICIO;
+non terminal S,A,B,C;
+//precedencia
+
+INICIO::=A:val {:
+if((int)val==0){
+Principal.escribirMensajeEnConsola("Balanceada");
+}else{
+Principal.escribirMensajeEnConsola("No Balanceada");
+}
+:};
+
+A::=A:val id{:RESULT=val;:}
+|A:val par1{:RESULT=(int)val+1;:}
+|A:val par2{:RESULT=(int)val-1;:}
+|id{:RESULT=0;:}
+|par1{:RESULT=1;:}
+|par2{:RESULT=-1;:};
+
+/*
+Para un analizador de sintaxis ascendente, escriba una definición dirigida por la sintaxis
+que reconozca una palabra formada por letras, paréntesis abiertos y paréntesis cerrados,
+de tal manera que se indique si dicha palabra esta balanceada. Una palabra balanceada
+significa que para cada paréntesis abierto existe un paréntesis cerrado y que primero
+aparece el paréntesis abierto. Si una palabra no contiene paréntesis se considera que
+esta balanceada.
+
+hola=balanceada
+)h)o)l(a( = No balanceada
+)h)o)l(a( = No balanceada
+((h(o)l)a) = balanceada
+*/
