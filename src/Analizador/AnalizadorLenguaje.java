@@ -10,6 +10,8 @@ import Analizador.E2.*;
 import Analizador.E3.*;
 import Analizador.E5.*;
 import Analizador.E6.*;
+import Analizador.E7.ParserE7;
+import Analizador.E7.ScannerE7;
 import Analizador.util.MiError;
 import java.io.BufferedReader;
 import java.io.StringReader;
@@ -23,7 +25,6 @@ import java_cup.runtime.lr_parser;
 public class AnalizadorLenguaje {
 
     private static ArrayList<MiError> errores;
-    //private static LinkedList<Importar> importaciones;
     private static AnalizadorLenguaje analizador;
 
     public static void addError(MiError miError) {
@@ -44,6 +45,13 @@ public class AnalizadorLenguaje {
         errores = aErrores;
     }
 
+    /**
+     * Método que retorna un objeto tipo Parser LR en funcion de la entrada 
+     * y el numero que indica el No. de ejercicio
+     * @param entrada texto a analizar
+     * @param num Número de ejercicio a probar
+     * @return Parser LR 
+     */
     private static lr_parser getParser(String entrada, int num) {
         switch (num) {
             case 1:
@@ -54,16 +62,29 @@ public class AnalizadorLenguaje {
                 return new ParserE3(new ScannerE3(new BufferedReader(new StringReader(entrada))));
             case 5:
                 return new ParserE5(new ScannerE5(new BufferedReader(new StringReader(entrada))));
-                case 6:
+            case 6:
                 return new ParserE6(new ScannerE6(new BufferedReader(new StringReader(entrada))));
+            case 7:
+                return new ParserE7(new ScannerE7(new BufferedReader(new StringReader(entrada))));
         }
         return null;
     }
 
+    /***
+     * Constructor privado de la clase estatica
+     * así la clase no puede ser instanciada
+     * Patrón de diseño Singleton
+     */
     private AnalizadorLenguaje() {
         errores = new ArrayList<>();
     }
 
+    /**
+     * Metodo principal el cual genera el parser, analiza la entrada y produce resultados
+     * @param entrada texto a analizar
+     * @param num Número de ejercicio a probar
+     * @return true si el análisis fue correcto y false si existió algún error
+     */
     public static boolean Analizar(String entrada, int num) {
         try {
 
@@ -83,6 +104,11 @@ public class AnalizadorLenguaje {
         return getErrores().isEmpty();
     }
 
+    /**
+     * Método utilizado para obtener acceso a la única instancia de la clase
+     * Patrón de diseño singleton
+     * @return 
+     */
     public static AnalizadorLenguaje getInstancia() {
         if (analizador == null) {
             analizador = new AnalizadorLenguaje();
@@ -90,6 +116,10 @@ public class AnalizadorLenguaje {
         return analizador;
     }
 
+    /**
+     * Método que limpia la instancia del analizador para un nuevo análisis
+     * Patrón de diseño singleton
+     */
     public static void LimpiarInstancia() {
         if (analizador != null) {
             AnalizadorLenguaje.setErrores(new ArrayList<>());
@@ -98,6 +128,12 @@ public class AnalizadorLenguaje {
         }
     }
 
+    /**
+     * Método que evita que la clase pueda ser clonada
+     * Patrón de diseño Singleton
+     * @return
+     * @throws CloneNotSupportedException 
+     */
     @Override
     protected Object clone() throws CloneNotSupportedException {
         try {
