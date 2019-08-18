@@ -10,7 +10,7 @@ package Analizador;
  */
 public class GeneradorCompilador {
     public static void main(String[] args){
-        generarCompilador("E5");
+        generarCompilador("E6");
     }
 
     /**

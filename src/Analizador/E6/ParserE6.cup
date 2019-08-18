@@ -5,7 +5,7 @@ import java_cup.runtime.*;
 import Analizador.util.*;
 import intefaz.Principal;
 import java.util.Stack;
-
+import java.util.ArrayList;
 
 parser code
 {:
@@ -41,16 +41,47 @@ non terminal INICIO;
 non terminal S,A,B,C;
 //precedencia
 
-INICIO::=S;
+INICIO::=S:val{:Principal.escribirMensajeEnConsola(val.toString());:};
 
-S::=cor1 A cor2;
+S::=cor1 A:l cor2{:
+ArrayList<String> lista=(ArrayList<String>)l;
+String primero=lista.get(0);
+String ultimo=lista.get(lista.size()-1);
+lista.set(0, ultimo);
+lista.set(lista.size()-1,primero);
+                StringBuilder resultado=new StringBuilder();
+                int i;
+                resultado.append("[");
+                for(i=0;i<lista.size();i++){
+                  resultado.append(lista.get(i));
+                    if(i<lista.size()-1){
+                        resultado.append(",");
+                    }
+                }
+                resultado.append("]");
+                RESULT=resultado.toString();
+:};
 
-A::=A coma B
-|B;
-
-B::=entero
-|S;
-
+A::=A:l coma entero:val{:
+ArrayList<String> lista=(ArrayList<String>)l;
+lista.add(val.toString());
+RESULT=lista;
+:}
+|entero:val{:
+ArrayList<String> lista=new ArrayList<>();
+lista.add(val.toString());
+RESULT=lista;
+:}
+|A:l coma S:val{:
+ArrayList<String> lista=(ArrayList<String>)l;
+lista.add(val.toString());
+RESULT=lista;
+:}
+|S:val {:
+ArrayList<String> lista=new ArrayList<>();
+lista.add(val.toString());
+RESULT=lista;
+:};
 
 /*
 Para un lenguaje que reconoce listas de números enteros, eventualmente anidadas entre
