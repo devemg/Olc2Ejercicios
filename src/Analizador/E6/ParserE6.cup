@@ -1,5 +1,5 @@
 
-package Analizador.E5;
+package Analizador.E6;
 
 import java_cup.runtime.*;
 import Analizador.util.*;
@@ -38,38 +38,27 @@ action code {:
 terminal mas,menos,div,por,par1,par2,coma,cor1,cor2,llave1,llave2,puntoycoma;
 terminal String id,entero,decimal,cadena,booleano,caracter;
 non terminal INICIO;
-non terminal A,B,C;
+non terminal S,A,B,C;
 //precedencia
 
+INICIO::=S;
 
-INICIO::=A:a{:Principal.escribirMensajeEnConsola(((Atributo5)a).getValor());:};
+S::=cor1 A cor2;
 
-A::=A:a mas B:b{:RESULT=new Atributo5(((Atributo5)a).getValor()+"+"+((Atributo5)b).getValor(),
-                        ((Atributo5)a).getContador()+((Atributo5)b).getContador());:}
-|B:val{:RESULT=val;:}
-;
+A::=A coma B
+|B;
 
-B::=B:b por C:a{:RESULT=new Atributo5(((Atributo5)b).getValor()+"*"+((Atributo5)a).getValor(),
-                        ((Atributo5)a).getContador()+((Atributo5)b).getContador());:}
-|C:val{:RESULT=val;:};
+B::=entero
+|S;
 
-C::=entero:val {:RESULT=new Atributo5(val,0);:}
-|par1 A:val par2{:
-Atributo5 atributo=(Atributo5)val;
-if(atributo.getContador()%2==0){
-//es par
-RESULT=new Atributo5("("+atributo.getValor()+")",atributo.getContador()+1);
-}else{
-RESULT=atributo;
-}
-:}
-;
 
 /*
-Para una gramática no ambigua, que reconoce expresiones aritméticas para los opera-
-dores de suma y multiplicación (+, *) escriba una definición dirigida por la sintaxis, que
-elimine los paréntesis anidados en la expresión exceptuado el primer par de paréntesis.
-((5) + (((4)))) + (2) * 3=((5) + (4)) + (2) * 3
-(3 * 4) + (3 * 1 + 1) + (2 * ((4)))=(3 * 4) + (3 * 1 + 1) + (2 * (4))
-Implementación de Atributo5 en Analizador.util
+Para un lenguaje que reconoce listas de números enteros, eventualmente anidadas entre
+corchetes, escriba una definición dirigida por la sintaxis, para una gramática no ambigua
+y no recursiva por la derecha, que intercambie el primer y último elemento de cada lista.
+[1, 2, [1, 2, [1, 2, [1, 2, [1, 2, 3]]]]] = [[[[[3, 2, 1], 2, 1], 2, 1], 2, 1], 2, 1]
+[1] = [1]
+[1, [1, [1, [1, [1]]]]] = [[[[[1], 1], 1], 1], 1]
+[1, 2, 3, 4, 5] = [5, 2, 3, 4, 1]
+[1, 2, 7, [9, 3, [1, 3, 5, 7], 1], [5, 0], [4, 3, 1]] = [[1, 3, 4], 2, 7, [1, 3, [7, 3, 5, 1], 9], [0, 5], 1]
 */

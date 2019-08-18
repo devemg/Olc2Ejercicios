@@ -11,14 +11,14 @@ package Analizador.util;
  */
 public class Atributo5 {
  private String valor;
- private int tipo;
+ private int contadorParentesis;
 //0=numero;
 //2=operacion
 //3=parentesis
 
-    public Atributo5(String valor, int tipo) {
+    public Atributo5(String valor, int contador) {
         this.valor = valor;
-        this.tipo = tipo;
+        this.contadorParentesis = contador;
     }
  
     /**
@@ -36,16 +36,16 @@ public class Atributo5 {
     }
 
     /**
-     * @return the tipo
+     * @return the contadorParentesis
      */
-    public int getTipo() {
-        return tipo;
+    public int getContador() {
+        return contadorParentesis;
     }
 
     /**
-     * @param tipo the tipo to set
+     * @param contador the contadorParentesis to set
      */
-    public void setTipo(int tipo) {
-        this.tipo = tipo;
+    public void setContador(int contador) {
+        this.contadorParentesis = contador;
     }
 }
