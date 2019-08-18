@@ -75,6 +75,9 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem10 = new javax.swing.JMenuItem();
         jMenuItem11 = new javax.swing.JMenuItem();
         jMenuItem12 = new javax.swing.JMenuItem();
+        jMenuItem13 = new javax.swing.JMenuItem();
+        jMenuItem14 = new javax.swing.JMenuItem();
+        jMenuItem15 = new javax.swing.JMenuItem();
 
         jMenu3.setText("File");
         jMenuBar2.add(jMenu3);
@@ -224,6 +227,30 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenu6.add(jMenuItem12);
 
+        jMenuItem13.setText("Ejercicio 8");
+        jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem13ActionPerformed(evt);
+            }
+        });
+        jMenu6.add(jMenuItem13);
+
+        jMenuItem14.setText("Ejercicio 9");
+        jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem14ActionPerformed(evt);
+            }
+        });
+        jMenu6.add(jMenuItem14);
+
+        jMenuItem15.setText("Ejercicio 10");
+        jMenuItem15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem15ActionPerformed(evt);
+            }
+        });
+        jMenu6.add(jMenuItem15);
+
         jMenuBar1.add(jMenu6);
 
         setJMenuBar(jMenuBar1);
@@ -364,6 +391,51 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem12ActionPerformed
 
+    private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
+        MyTab mytab = getCurrentTab();
+        if (mytab != null) {
+            System.out.println("ANALIZANDO......");
+            if (AnalizadorLenguaje.Analizar(mytab.getText(),8)) {
+                escribirInformacionExitoEnConsola("Finalizado con éxito");
+            } else {
+                escribirErrorEnConsola("Finalizado con errores");
+                AnalizadorLenguaje.getErrores().stream().forEach((er) -> {
+                    escribirErrorEnConsola(er.toString());
+                });
+            }
+        }
+    }//GEN-LAST:event_jMenuItem13ActionPerformed
+
+    private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
+         MyTab mytab = getCurrentTab();
+        if (mytab != null) {
+            System.out.println("ANALIZANDO......");
+            if (AnalizadorLenguaje.Analizar(mytab.getText(),9)) {
+                escribirInformacionExitoEnConsola("Finalizado con éxito");
+            } else {
+                escribirErrorEnConsola("Finalizado con errores");
+                AnalizadorLenguaje.getErrores().stream().forEach((er) -> {
+                    escribirErrorEnConsola(er.toString());
+                });
+            }
+        }
+    }//GEN-LAST:event_jMenuItem14ActionPerformed
+
+    private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
+        MyTab mytab = getCurrentTab();
+        if (mytab != null) {
+            System.out.println("ANALIZANDO......");
+            if (AnalizadorLenguaje.Analizar(mytab.getText(),10)) {
+                escribirInformacionExitoEnConsola("Finalizado con éxito");
+            } else {
+                escribirErrorEnConsola("Finalizado con errores");
+                AnalizadorLenguaje.getErrores().stream().forEach((er) -> {
+                    escribirErrorEnConsola(er.toString());
+                });
+            }
+        }
+    }//GEN-LAST:event_jMenuItem15ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -411,6 +483,9 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
+    private javax.swing.JMenuItem jMenuItem13;
+    private javax.swing.JMenuItem jMenuItem14;
+    private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;

@@ -10,8 +10,9 @@ import Analizador.E2.*;
 import Analizador.E3.*;
 import Analizador.E5.*;
 import Analizador.E6.*;
-import Analizador.E7.ParserE7;
-import Analizador.E7.ScannerE7;
+import Analizador.E7.*;
+import Analizador.E8.*;
+
 import Analizador.util.MiError;
 import java.io.BufferedReader;
 import java.io.StringReader;
@@ -66,6 +67,8 @@ public class AnalizadorLenguaje {
                 return new ParserE6(new ScannerE6(new BufferedReader(new StringReader(entrada))));
             case 7:
                 return new ParserE7(new ScannerE7(new BufferedReader(new StringReader(entrada))));
+         case 8:
+                return new ParserE8(new ScannerE8(new BufferedReader(new StringReader(entrada))));
         }
         return null;
     }
