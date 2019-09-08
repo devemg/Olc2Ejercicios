@@ -1,0 +1,139 @@
+
+package Analizador.E8;
+
+import java_cup.runtime.*;
+import Analizador.util.*;
+import intefaz.Principal;
+import java.util.Stack;
+import java.util.ArrayList;
+
+parser code
+{:
+    /**Metodo al que se llama automáticamente ante algún error sintactico.*/
+    public void syntax_error(Symbol s){
+        System.err.println("Error en la Línea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "
+        +s.value + " no reconocido." );
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+        
+    }
+
+    /**Metodo al que se llama en el momento en que ya no es posible una recuperación de
+    getErrores().*/
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        System.err.println("Error en la Línea " + (s.right+1)+ "Columna "+(s.left+1)+". Identificador " +
+        s.value + " no reconocido.");  
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+  
+    }
+
+:}
+
+action code {:
+
+:}
+
+/*terminales reservados*/
+terminal mas,menos,div,por,par1,par2,coma,cor1,cor2,llave1,llave2,puntoycoma,pr_sum,pr_mul;
+terminal String id,entero,decimal,cadena,booleano,caracter;
+non terminal INICIO;
+non terminal A,V,E,B,C;
+//precedencia
+
+INICIO::=A:val{:
+if(val!=null){
+Atributo atributo=(Atributo)val;
+Principal.escribirMensajeEnConsola(atributo.getCadena());
+}else{
+Principal.escribirMensajeEnConsola("Error");
+}
+:};
+
+A::=pr_sum par1 V:l par2{:
+if(l!=null){
+ArrayList<Atributo> lista = (ArrayList<Atributo>)l;
+if(lista.size()>1){
+StringBuilder cadena = new StringBuilder();
+int i;
+for(i=0;i<lista.size();i++){
+if(lista.get(i).getTipo()=='M'){
+cadena.append("(");
+}
+cadena.append(lista.get(i).getCadena());
+if(lista.get(i).getTipo()=='M'){
+cadena.append(")");
+}
+if(i<lista.size()-1){
+cadena.append("+");
+}
+}
+RESULT=new Atributo(cadena.toString(),'S');
+}
+}
+:}
+|B:val {:if(val!=null){
+RESULT=val;
+}:};
+
+B::=pr_mul par1 V:l par2{:
+if(l!=null){
+ArrayList<Atributo> lista = (ArrayList<Atributo>)l;
+if(lista.size()>1){
+StringBuilder cadena = new StringBuilder();
+int i;
+for(i=0;i<lista.size();i++){
+if(lista.get(i).getTipo()=='S'){
+cadena.append("(");
+}
+cadena.append(lista.get(i).getCadena());
+if(lista.get(i).getTipo()=='S'){
+cadena.append(")");
+}
+if(i<lista.size()-1){
+cadena.append("*");
+}
+}
+RESULT=new Atributo(cadena.toString(),'M');
+}
+}
+:};
+
+V::= V:l coma id:val{:
+if(l!=null && val!=null){
+ArrayList<Atributo> lista = (ArrayList<Atributo>)l;
+lista.add(new Atributo(val,'I'));
+RESULT=lista;
+}
+:}
+| V:l coma A:val {:
+if(l!=null && val!=null){
+ArrayList<Atributo> lista = (ArrayList<Atributo>)l;
+lista.add((Atributo)val);
+RESULT=lista;
+}
+:}
+|id:val {:
+ArrayList<Atributo> lista = new ArrayList<>();
+lista.add(new Atributo(val,'I'));
+RESULT=lista;
+:}
+|A:val {:
+if(val!=null){
+ArrayList<Atributo> lista = new ArrayList<>();
+lista.add((Atributo)val);
+RESULT=lista;
+}
+:};
+
+/*
+Para una gramática que reconoce expresiones que incluyen operandos (identificadores) y
+operadores (Sum para suma y Mul para multiplicación), escriba una definición dirigida
+por la sintaxis que convierta estas expresiones a formato infijo estándar. Cuando un
+operador no cuenta con más de un operando, debe desplegarse un mensaje de error.
+Asuma que se utiliza un analizador de sintaxis ascendente.
+
+Mul(Sum(a, b, c), Sum(b, h), Sum(j, k), d)=(a + b + c) ∗ (b + h) ∗ (j + k) ∗ d
+Sum(a, b, Mul(c, b, h, j), Mul(d, k)) = a + b + c ∗ b ∗ h ∗ j + d ∗ k
+Sum(a, Sum(b)) = Error
+*/
