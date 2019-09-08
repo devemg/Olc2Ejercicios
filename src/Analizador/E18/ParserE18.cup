@@ -1,0 +1,109 @@
+
+package Analizador.E18;
+
+import java_cup.runtime.*;
+import Analizador.util.*;
+import intefaz.Principal;
+import java.util.Stack;
+import java.util.ArrayList;
+
+parser code
+{:
+    /**Metodo al que se llama automáticamente ante algún error sintactico.*/
+    public void syntax_error(Symbol s){
+        System.err.println("Error en la Línea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "
+        +s.value + " no reconocido." );
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+        
+    }
+
+    /**Metodo al que se llama en el momento en que ya no es posible una recuperación de
+    getErrores().*/
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        System.err.println("Error en la Línea " + (s.right+1)+ "Columna "+(s.left+1)+". Identificador " +
+        s.value + " no reconocido.");  
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+  
+    }
+
+:}
+
+action code {:
+
+:}
+
+/*terminales reservados*/
+terminal mas,menos,div,por,par1,par2,coma,cor1,cor2,llave1,llave2,puntoycoma,pr_sum,pr_mul;
+terminal String id,entero,decimal,cadena,booleano,caracter;
+non terminal INICIO;
+non terminal A,E,F,T;
+//precedencia
+
+INICIO::=E:izq{:
+Atributo att = (Atributo)izq;
+String nuevoValor="";
+if(att.getOp().equals("*")){
+nuevoValor="mul("+att.getValor()+")";
+}else if(att.getOp().equals("+")){
+nuevoValor="sum("+att.getValor()+")";
+}else{
+nuevoValor=att.getValor();
+}
+Principal.escribirMensajeEnConsola(nuevoValor);
+:};
+
+E::=E:izq mas F:der{:
+Atributo att = (Atributo)izq;
+String nuevoValor="";
+if(att.getOp().equals("*")){
+nuevoValor="mul("+att.getValor()+")";
+}else{
+nuevoValor=att.getValor();
+}
+Atributo att2 = (Atributo)der;
+if(att2.getOp().equals("*")){
+nuevoValor+=",mul("+att2.getValor()+")";
+}else{
+nuevoValor+=","+att2.getValor();
+}
+RESULT=new Atributo(nuevoValor,"+");
+:}
+|F:val {:RESULT=val;:};
+
+F::=F:izq por T:der {:
+Atributo att = (Atributo)izq;
+String nuevoValor="";
+if(att.getOp().equals("+")){
+nuevoValor="sum("+att.getValor()+")";
+}else{
+nuevoValor=att.getValor();
+}
+Atributo att2 = (Atributo)der;
+if(att2.getOp().equals("+")){
+nuevoValor+=",sum("+att2.getValor()+")";
+}else{
+nuevoValor+=","+att2.getValor();
+}
+RESULT=new Atributo(nuevoValor,"*");
+:}
+|T:val {:RESULT=val;:};
+
+T::=entero:val{:RESULT=new Atributo(val,"N");:}
+|par1 E:val par2{:RESULT=val;:};
+
+
+/*
+Para una gramática que reconoce expresiones aritméticas, con los operadores de suma
+(+) y multiplicación (*), escriba una definición dirigida por la sintaxis para un anali-
+zador de sintaxis ascendente, que transforme la expresión de entrada, como se muestra
+en los siguientes ejemplos:
+
+1 = 1
+1 + 2 + 3 = Sum(1, 2, 3)
+1 + 2 * 3 = Sum(1, Mul(2, 3))
+1 + 2 * 3 * 4 * 3 + 5 + 6 =  Sum(1, Mul(2,3, 4, 3), 5, 6)
+(2 + 3) * 4 * (3 + 5) =  Mul(Sum(2, 3), 4, Sum(3, 5))
+(1 + 2 + 3) * 4 * (3 + 5 + 6) = Mul(Sum(1, 2, 3), 4, Sum(3, 5, 6))
+*/
