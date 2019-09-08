@@ -6,8 +6,8 @@
 package Analizador;
 
 import Analizador.E1.*;
-import Analizador.E19.ParserE19;
-import Analizador.E19.ScannerE19;
+import Analizador.E17.*;
+import Analizador.E19.*;
 import Analizador.E2.*;
 import Analizador.E3.*;
 import Analizador.E5.*;
@@ -73,6 +73,8 @@ public class AnalizadorLenguaje {
                 return new ParserE8(new ScannerE8(new BufferedReader(new StringReader(entrada))));
              case 19:
                 return new ParserE19(new ScannerE19(new BufferedReader(new StringReader(entrada))));
+         case 17:
+                return new ParserE17(new ScannerE17(new BufferedReader(new StringReader(entrada))));
         }
         return null;
     }

@@ -79,6 +79,7 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem14 = new javax.swing.JMenuItem();
         jMenuItem15 = new javax.swing.JMenuItem();
         jMenuItem16 = new javax.swing.JMenuItem();
+        jMenuItem17 = new javax.swing.JMenuItem();
 
         jMenu3.setText("File");
         jMenuBar2.add(jMenu3);
@@ -259,6 +260,14 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         jMenu6.add(jMenuItem16);
+
+        jMenuItem17.setText("Ejercicio 17");
+        jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem17ActionPerformed(evt);
+            }
+        });
+        jMenu6.add(jMenuItem17);
 
         jMenuBar1.add(jMenu6);
 
@@ -460,6 +469,21 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem16ActionPerformed
 
+    private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
+        MyTab mytab = getCurrentTab();
+        if (mytab != null) {
+            System.out.println("ANALIZANDO......");
+            if (AnalizadorLenguaje.Analizar(mytab.getText(),17)) {
+                escribirInformacionExitoEnConsola("Finalizado con éxito");
+            } else {
+                escribirErrorEnConsola("Finalizado con errores");
+                AnalizadorLenguaje.getErrores().stream().forEach((er) -> {
+                    escribirErrorEnConsola(er.toString());
+                });
+            }
+        }
+    }//GEN-LAST:event_jMenuItem17ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -511,6 +535,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem14;
     private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
+    private javax.swing.JMenuItem jMenuItem17;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;

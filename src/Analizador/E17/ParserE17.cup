@@ -1,0 +1,64 @@
+
+package Analizador.E17;
+
+import java_cup.runtime.*;
+import Analizador.util.*;
+import intefaz.Principal;
+import java.util.Stack;
+import java.util.ArrayList;
+
+parser code
+{:
+    /**Metodo al que se llama automáticamente ante algún error sintactico.*/
+    public void syntax_error(Symbol s){
+        System.err.println("Error en la Línea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "
+        +s.value + " no reconocido." );
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+        
+    }
+
+    /**Metodo al que se llama en el momento en que ya no es posible una recuperación de
+    getErrores().*/
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        System.err.println("Error en la Línea " + (s.right+1)+ "Columna "+(s.left+1)+". Identificador " +
+        s.value + " no reconocido.");  
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+  
+    }
+
+:}
+
+action code {:
+
+:}
+
+/*terminales reservados*/
+terminal mas,menos,div,por,par1,par2,coma,cor1,cor2,llave1,llave2,puntoycoma,pr_sum,pr_mul;
+terminal String id,entero,decimal,cadena,booleano,caracter,cero,uno;
+non terminal INICIO;
+non terminal A,V,E,B,C;
+//precedencia
+
+INICIO::=A:val {:
+Principal.escribirMensajeEnConsola(val.toString());
+:};
+
+A::=A:val cero{:RESULT =val+"1";:}
+|A:val uno{:RESULT =val+"0";:}
+|cero{:RESULT = "1";:}
+|uno{:RESULT = "0";:};
+
+
+/*
+Para una gramática que reconoce cadenas de 0
+0
+s y 1
+0
+s, escriba una definición dirigida
+por la sintaxis de tal manera que para cada cadena se escriba el complemento.
+
+01 = 10
+1000001 = 0111110
+*/
