@@ -1,0 +1,99 @@
+
+package Analizador.E20;
+
+import java_cup.runtime.*;
+import Analizador.util.*;
+import intefaz.Principal;
+import java.util.Stack;
+import java.util.ArrayList;
+
+parser code
+{:
+    /**Metodo al que se llama automáticamente ante algún error sintactico.*/
+    public void syntax_error(Symbol s){
+        System.err.println("Error en la Línea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "
+        +s.value + " no reconocido." );
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+        
+    }
+
+    /**Metodo al que se llama en el momento en que ya no es posible una recuperación de
+    getErrores().*/
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        System.err.println("Error en la Línea " + (s.right+1)+ "Columna "+(s.left+1)+". Identificador " +
+        s.value + " no reconocido.");  
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+  
+    }
+
+:}
+
+action code {:
+
+:}
+
+/*terminales reservados*/
+terminal mas,menos,div,por,par1,par2,coma,cor1,cor2,llave1,llave2,puntoycoma,pr_sum,pr_mul;
+terminal String id,entero,decimal,cadena,booleano,caracter;
+non terminal INICIO;
+non terminal A,L,F,E,H,I;
+//precedencia
+
+INICIO::=A:a{:
+Atributo a1=(Atributo)a;
+Principal.escribirMensajeEnConsola(a1.getValor());
+:};
+
+A::=A:a coma L:b{:
+Atributo a1=(Atributo)a;
+Atributo b1=(Atributo)b;
+RESULT=new Atributo(b1.getValor()+"\n"+a1.getValor(),0);
+:}
+|L:val{:RESULT=val;:};
+
+L::= cor1 F:val cor2{:
+Atributo att=(Atributo)val;
+RESULT=new Atributo("["+att.getValor()+"]Mayor:"+att.getMayor(),0);
+:}
+|cor1 cor2{:RESULT=new Atributo("[]Mayor:No hay",0);:};
+
+F::=F:lista coma E:val {:
+Atributo att=(Atributo)lista;
+int mayor=att.getMayor()>(int)val?att.getMayor():(int)val;
+RESULT=new Atributo(att.getValor()+","+val.toString(),mayor);
+:}
+|E:val {:RESULT=new Atributo(val.toString(),(int)val);:};
+
+E::=E:a mas H:b{:
+RESULT=(int)a+(int)b;
+:}
+|H:a{:RESULT=a;:};
+
+H::=H:a por I:b{:
+RESULT=(int)a*(int)b;
+:}
+|I:a{:RESULT=a;:};
+
+I::=entero:a{:RESULT=Integer.parseInt(a);:}
+|par1 E:a par2{:
+RESULT=a;
+:};
+
+
+/*
+Escribir una definición dirigida por la sintaxis que reconozca una lista de listas de
+expresiones aritméticas entre [], la gramática debe evaluar cada expresión aritmética y
+la salida debe mostrar la lista de [] invertida e indicando cual es el valor mayor de las
+expresiones evaluadas en ella.
+
+[5 + 4, 3 * 2, 8 + 1 * 3],[2, 3 * 1 + 2],
+[],[5, 2, 8 + 1 + 2]
+====================================
+ [5, 2, 11], Mayor: 11 
+[] No hay mayor
+[2, 5] Mayor:5
+[9, 6, 11], Mayor: 11
+
+*/

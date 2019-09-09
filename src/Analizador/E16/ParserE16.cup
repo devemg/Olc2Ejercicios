@@ -48,7 +48,7 @@ Principal.escribirMensajeEnConsola(l.getValor());
 
 A::=pr_struct par1 L:a par2 dospuntos id:id{:
 Atributo l = (Atributo)a;
-RESULT=new Atributo("struct (\n"+.getValor()+"):"+id,"");
+RESULT=new Atributo("struct (\n"+l.getValor()+"):"+id,"");
 :};
 
 L::=L:a puntoycoma ML:b{:

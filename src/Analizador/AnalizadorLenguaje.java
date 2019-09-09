@@ -13,10 +13,10 @@ import Analizador.E3.*;
 import Analizador.E5.*;
 import Analizador.E6.*;
 import Analizador.E7.*;
-import Analizador.E8.*;
 import Analizador.E18.*;
 import Analizador.E16.*;
-
+import Analizador.E20.*;
+import Analizador.E8.*;
 import Analizador.util.MiError;
 import java.io.BufferedReader;
 import java.io.StringReader;
@@ -81,6 +81,8 @@ public class AnalizadorLenguaje {
                 return new ParserE18(new ScannerE18(new BufferedReader(new StringReader(entrada))));
                  case 16:
                 return new ParserE16(new ScannerE16(new BufferedReader(new StringReader(entrada))));
+                     case 20:
+                return new ParserE20(new ScannerE20(new BufferedReader(new StringReader(entrada))));
         }
         return null;
     }
