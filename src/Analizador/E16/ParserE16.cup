@@ -1,0 +1,98 @@
+
+package Analizador.E16;
+
+import java_cup.runtime.*;
+import Analizador.util.*;
+import intefaz.Principal;
+import java.util.Stack;
+import java.util.ArrayList;
+
+parser code
+{:
+    /**Metodo al que se llama automáticamente ante algún error sintactico.*/
+    public void syntax_error(Symbol s){
+        System.err.println("Error en la Línea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "
+        +s.value + " no reconocido." );
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+        
+    }
+
+    /**Metodo al que se llama en el momento en que ya no es posible una recuperación de
+    getErrores().*/
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        System.err.println("Error en la Línea " + (s.right+1)+ "Columna "+(s.left+1)+". Identificador " +
+        s.value + " no reconocido.");  
+        Analizador.AnalizadorLenguaje.getErrores().add(new MiError("identificador \""+s.value+"\" no identificado", TipoError.SINTACTICO, 
+        "",(s.right+1), (s.left+1)));
+  
+    }
+
+:}
+
+action code {:
+
+:}
+
+/*terminales reservados*/
+terminal mas,menos,div,por,par1,par2,coma,cor1,cor2,llave1,llave2,puntoycoma,pr_int,pr_char,pr_struct,dospuntos;
+terminal String id,entero,decimal,cadena,booleano,caracter;
+non terminal INICIO;
+non terminal A,V,E,B,C,L,ML,LI,LE,T;
+//precedencia
+
+INICIO::=A:val{:
+Atributo l = (Atributo)val;
+Principal.escribirMensajeEnConsola(l.getValor());
+:};
+
+A::=pr_struct par1 L:a par2 dospuntos id:id{:
+Atributo l = (Atributo)a;
+RESULT=new Atributo("struct (\n"+.getValor()+"):"+id,"");
+:};
+
+L::=L:a puntoycoma ML:b{:
+Atributo l = (Atributo)a;
+Atributo ml = (Atributo)b;
+
+RESULT = new Atributo(l.getValor()+",\n"+ml.getValor(),"");
+:}
+|ML:val{:RESULT=val;:};
+
+ML::=LI:val{:RESULT=val;:}
+|LE:val{:RESULT=val;:};
+
+LI::=LI:a coma id:id{:
+Atributo att = (Atributo)a;
+RESULT= new Atributo(att.getValor()+",\n"+att.getT()+" "+id,att.getT());
+:}
+|T:tipo id:id{:
+RESULT=new Atributo(tipo+" "+id,tipo.toString());
+:};
+
+T::= pr_char{:RESULT="char";:}
+|pr_int{:RESULT="int";:};
+
+LE::=LE:b coma par1 L:a par2 dospuntos id:letra{:
+Atributo le = (Atributo)b;
+Atributo att = (Atributo)a;
+RESULT = new Atributo(le.getValor()+",\n"+le.getT()+" (\n"+att.getValor()+"):"+letra,le.getT());
+:}
+    |pr_struct par1 L:a par2 dospuntos id:letra {:
+Atributo att = (Atributo)a;
+
+RESULT = new Atributo("struct (\n"+att.getValor()+"):"+letra,"struct");
+:};
+
+/*
+Para un lenguaje que sirve para definir estructuras, escriba una definición dirigida por la
+sintaxis que separe las definiciones de dichas estructuras y las convierta en definiciones
+más detalladas en términos de lectura.
+
+Struct ( int a , b , c ) : X = Struct
+                                 (
+                                 int a
+                                 , int b
+                                 , int c
+                                 ) : X
+*/

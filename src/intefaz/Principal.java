@@ -80,6 +80,8 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem15 = new javax.swing.JMenuItem();
         jMenuItem16 = new javax.swing.JMenuItem();
         jMenuItem17 = new javax.swing.JMenuItem();
+        jMenuItem18 = new javax.swing.JMenuItem();
+        jMenuItem19 = new javax.swing.JMenuItem();
 
         jMenu3.setText("File");
         jMenuBar2.add(jMenu3);
@@ -268,6 +270,22 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         jMenu6.add(jMenuItem17);
+
+        jMenuItem18.setText("Ejercicio 18");
+        jMenuItem18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem18ActionPerformed(evt);
+            }
+        });
+        jMenu6.add(jMenuItem18);
+
+        jMenuItem19.setText("Ejercicio 16");
+        jMenuItem19.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem19ActionPerformed(evt);
+            }
+        });
+        jMenu6.add(jMenuItem19);
 
         jMenuBar1.add(jMenu6);
 
@@ -484,6 +502,36 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem17ActionPerformed
 
+    private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
+         MyTab mytab = getCurrentTab();
+        if (mytab != null) {
+            System.out.println("ANALIZANDO......");
+            if (AnalizadorLenguaje.Analizar(mytab.getText(),18)) {
+                escribirInformacionExitoEnConsola("Finalizado con éxito");
+            } else {
+                escribirErrorEnConsola("Finalizado con errores");
+                AnalizadorLenguaje.getErrores().stream().forEach((er) -> {
+                    escribirErrorEnConsola(er.toString());
+                });
+            }
+        }
+    }//GEN-LAST:event_jMenuItem18ActionPerformed
+
+    private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem19ActionPerformed
+        MyTab mytab = getCurrentTab();
+        if (mytab != null) {
+            System.out.println("ANALIZANDO......");
+            if (AnalizadorLenguaje.Analizar(mytab.getText(),16)) {
+                escribirInformacionExitoEnConsola("Finalizado con éxito");
+            } else {
+                escribirErrorEnConsola("Finalizado con errores");
+                AnalizadorLenguaje.getErrores().stream().forEach((er) -> {
+                    escribirErrorEnConsola(er.toString());
+                });
+            }
+        }
+    }//GEN-LAST:event_jMenuItem19ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -536,6 +584,8 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem17;
+    private javax.swing.JMenuItem jMenuItem18;
+    private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
